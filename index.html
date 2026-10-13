@@ -1,0 +1,589 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>MD x MBCS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brand:#0B4F3C; --brand-dark:#083B2D; --cream:#FBEBCE;
+  --b900:#0A3A2C; --b800:#155E47; --b600:#0B4F3C; --b400:#5E8F7C; --b300:#A9C8B8; --b200:#D5E4DA; --b100:#FBEBCE; --b50:#FDF7EC;
+  --ink:#1E2A24; --muted:#56615B; --faint:#8A928C; --line:#E8DFCC; --track:#EEE7D8;
+  --bg:#FAF6EE; --card:#FFFFFF; --red:#B83227; --red-bg:#FBE9E6; --green:#4A9A3B; --green-bg:#E7F3E2;
+  --amber:#8A5A00; --amber-bg:#FFF2CF;
+  --serif:"Mandai Value Serif","Value Serif","Source Serif 4",Georgia,serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:Karrik,"DM Sans","Helvetica Neue",Arial,sans-serif;font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer;background:none;border:0;padding:0}
+
+.in{max-width:1440px;margin:0 auto;padding-left:32px;padding-right:32px}
+.top{background:var(--b900);color:#fff}
+.top .in{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding-top:16px;padding-bottom:16px}
+.top h1{font-size:20px;font-weight:700;margin:0;letter-spacing:-.01em}
+.top .date{color:var(--b300);font-size:14px}
+.top .right{margin-left:auto;display:flex;align-items:center;gap:14px;font-size:12px;color:var(--b300)}
+.hbtn{text-decoration:none;display:inline-block;border:1px solid rgba(255,255,255,.35);color:#fff;border-radius:6px;padding:6px 12px;font-size:13px;font-weight:500}
+.hbtn:hover{background:rgba(255,255,255,.1)}
+.hbtn.primary{background:var(--b600);border-color:var(--b600)}
+.hbtn.primary:hover{background:#0063B8}
+.tabs{background:var(--b600)}
+.tabs .in{display:flex;gap:4px;overflow-x:auto}
+.tab{color:#D7E8F8;padding:11px 14px 9px;font-size:13px;font-weight:500;border-bottom:3px solid transparent;white-space:nowrap}
+.tab:hover{color:#fff}
+.tab.on{color:#fff;border-bottom-color:#fff}
+
+.wrap{padding-top:24px;padding-bottom:48px}
+.banner{font-size:12.5px;padding:9px 14px;border-radius:6px;margin-bottom:18px;background:var(--b100);color:var(--b900);border:1px solid var(--b200)}
+.banner.err{background:var(--red-bg);color:var(--red);border-color:#F6C6CF}
+.banner.warn{background:var(--amber-bg);color:var(--amber);border-color:#F2DFA6}
+.section-title{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--b800);margin:0 0 10px}
+
+/* summary row */
+.summary{display:grid;grid-template-columns:1.3fr repeat(5,1fr);background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:22px}
+.sum{padding:16px 18px;border-left:1px solid var(--line)}
+.sum:first-child{border-left:0;background:var(--b600);color:#fff}
+.sum .k{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.sum:first-child .k{color:var(--b200)}
+.sum .v{font-size:28px;font-weight:700;line-height:1.15;margin-top:4px;color:var(--b900)}
+.sum:first-child .v{color:#fff}
+.sum .s{font-size:11.5px;color:var(--faint);margin-top:2px}
+.sum:first-child .s{color:var(--b200)}
+.sum .mini{height:5px;background:rgba(255,255,255,.25);border-radius:3px;margin-top:8px;overflow:hidden}
+.sum .mini>div{height:100%;background:#fff;border-radius:3px}
+@media (max-width:1000px){.summary{grid-template-columns:repeat(3,1fr)}.sum{border-top:1px solid var(--line)}}
+
+/* workstreams */
+.streams{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin-bottom:26px}
+.stream{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 16px}
+.stream .top2{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.stream .nm{font-size:13px;font-weight:600;color:var(--b900)}
+.stream .pc{font-size:20px;font-weight:700;color:var(--b600)}
+.stream .bar{margin-top:8px}
+.stream .s{font-size:11px;color:var(--faint);margin-top:7px}
+
+/* project cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px;margin-bottom:26px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;text-align:left;width:100%;display:flex;flex-direction:column}
+.card:hover{border-color:var(--b300)}
+.card.sel{border-color:var(--b600);box-shadow:0 0 0 1px var(--b600)}
+.card .ch{background:var(--b100);padding:11px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:1px solid var(--line)}
+.card .name{font-size:14px;font-weight:600;color:var(--b900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.days{font-size:11px;font-weight:600;padding:3px 8px;border-radius:999px;background:var(--card);color:var(--b800);white-space:nowrap;border:1px solid var(--b200)}
+.days.warn{background:var(--red-bg);color:var(--red);border-color:#F6C6CF}
+.card .cb{padding:14px 16px}
+.card .pct{display:flex;align-items:baseline;gap:8px}
+.card .pct b{font-size:30px;font-weight:700;color:var(--b600);line-height:1;letter-spacing:-.02em}
+.card .pct span{font-size:12px;color:var(--muted)}
+.bar{height:6px;background:var(--track);border-radius:3px;overflow:hidden;margin-top:10px}
+.bar>div{height:100%;background:var(--b600);border-radius:3px}
+.card .meta{font-size:11.5px;color:var(--faint);margin-top:10px;line-height:1.5}
+.card .meta .r{color:var(--red);font-weight:500}
+
+/* panels */
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:22px;align-items:start}
+@media (max-width:1100px){.layout{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:16px}
+.ph{background:var(--b100);border-bottom:1px solid var(--line);padding:10px 16px;display:flex;justify-content:space-between;align-items:center}
+.ph h2{margin:0;font-size:13.5px;font-weight:600;color:var(--b900)}
+.ph span{font-size:11.5px;color:var(--muted)}
+.pb{padding:0 16px}
+
+.thead,.item{display:grid;grid-template-columns:minmax(0,1.35fr) 112px minmax(0,1.75fr) 78px;gap:16px;align-items:center}
+.thead{background:var(--b50);border-bottom:1px solid var(--line);padding:7px 16px;font-size:10.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--faint)}
+.thead div:last-child{text-align:right}
+.item{padding:11px 0;border-top:1px solid var(--track)}
+.item:first-child{border-top:0}
+.item .nm{font-weight:500;font-size:13.5px}
+.item .sub{font-size:11.5px;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.type{display:inline-block;font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--b800);background:var(--b50);border:1px solid var(--b200);border-radius:3px;padding:1px 5px;margin-right:6px;vertical-align:1px}
+.chip{display:inline-block;font-size:11px;font-weight:600;padding:3px 9px;border-radius:4px;white-space:nowrap}
+.chip.creative{background:var(--b600);color:#fff}
+.chip.content{background:var(--b800);color:#fff}
+.chip.client{background:var(--b200);color:var(--b900)}
+.chip.compliance{background:var(--amber-bg);color:var(--amber)}
+.chip.partner{background:var(--b50);color:var(--b800);border:1px solid var(--b300);padding:2px 8px}
+.chip.done{background:var(--green-bg);color:var(--green)}
+.chip.hold,.chip.none{background:var(--track);color:var(--muted)}
+.segs{display:flex;gap:2px}
+.segs span{flex:1;height:7px;border-radius:2px;background:var(--track)}
+.segs .d{background:var(--b600)}
+.segs .n{background:var(--b300)}
+.segs.ok span{background:var(--green)}
+.rl{font-size:11px;color:var(--faint);margin-top:5px}
+.rl b{color:var(--ink);font-weight:600}
+.rl .r{color:var(--red);font-weight:500}
+.rl .w{color:var(--amber);font-weight:500}
+.dates{font-size:11.5px;color:var(--muted);text-align:right;line-height:1.5}
+.dates .late{color:var(--red);font-weight:600}
+.dates .lbl{color:var(--faint)}
+@media (max-width:760px){.thead{display:none}.item{grid-template-columns:1fr 1fr}.dates{text-align:left}}
+
+.li{padding:10px 0;border-top:1px solid var(--track);font-size:13px}
+.li:first-child{border-top:0}
+.li .m{font-size:11px;color:var(--faint);margin-top:2px}
+.li .m .r{color:var(--red);font-weight:500}
+.li.done .t{color:var(--faint);text-decoration:line-through}
+.box{display:inline-block;width:13px;height:13px;border:1.5px solid var(--b300);border-radius:3px;margin-right:9px;vertical-align:-2px}
+.li.done .box{background:var(--b600);border-color:var(--b600)}
+.indent{margin-left:22px}
+.when{display:inline-block;min-width:54px;font-size:11px;font-weight:700;color:var(--b600)}
+.when.soon{color:var(--red)}
+.empty{font-size:12px;color:var(--faint);padding:12px 0}
+
+.key{display:flex;gap:16px;flex-wrap:wrap;font-size:11px;color:var(--faint);margin-top:2px}
+.key span{display:inline-flex;align-items:center;gap:6px}
+.key i{width:14px;height:6px;border-radius:2px;display:inline-block}
+
+/* brand accents */
+.top{background:var(--b900)}
+.top h1{font-family:var(--serif);font-weight:600;font-size:23px;letter-spacing:0;color:var(--cream)}
+.top .date{color:#CFE0D6}
+.top .right{color:#CFE0D6}
+.tabs{background:var(--b800)}
+.tab{color:#D9E8DF}
+.tab.on{color:var(--cream);border-bottom-color:var(--cream)}
+.hbtn{border-color:rgba(251,235,206,.45);color:var(--cream)}
+.hbtn.primary{background:var(--cream);border-color:var(--cream);color:var(--b900);font-weight:600}
+.hbtn.primary:hover{background:#F6DFB3}
+.sum:first-child{background:var(--brand)}
+.sum:first-child .v{color:var(--cream)}
+.sum:first-child .k,.sum:first-child .s{color:rgba(251,235,206,.85)}
+.sum:first-child .mini>div{background:var(--cream)}
+.sum .v,.card .pct b,.stream .pc{font-family:var(--serif);font-weight:600}
+.ph{border-bottom-color:#EAD9B5}
+.ph h2,.card .name{font-family:var(--serif);font-weight:600;font-size:15px}
+.card .ch{border-bottom-color:#EAD9B5}
+.chip.creative{background:var(--brand);color:var(--cream)}
+.chip.content{background:var(--b400);color:#fff}
+.chip.client{background:var(--b200);color:var(--b900)}
+.card.sel{border-color:var(--brand);box-shadow:0 0 0 1px var(--brand)}
+.section-title{color:var(--b800);padding-left:8px;border-left:3px solid var(--brand);line-height:1.2}
+.type{background:var(--b50);border-color:#EAD9B5;color:var(--b800)}
+.banner{background:var(--b50);border-color:#EAD9B5;color:var(--b900)}
+.days{border-color:#EAD9B5}
+</style>
+</head>
+<body>
+<div class="top"><div class="in">
+  <h1 id="title">MD x MBCS</h1>
+  <span class="date" id="today"></span>
+  <div class="right">
+    <span id="stamp"></span>
+    <button class="hbtn" id="refresh" type="button">Refresh</button>
+    <a class="hbtn primary" id="editBtn" href="#" target="_blank" rel="noopener">Edit in Google Sheets</a>
+  </div>
+</div></div>
+<nav class="tabs"><div class="in" id="chips"></div></nav>
+
+<div class="in wrap">
+  <div id="banners"></div>
+  <div class="summary" id="strip"></div>
+  <div class="section-title">Workstreams</div>
+  <div class="streams" id="streams"></div>
+  <div class="section-title">Projects</div>
+  <div class="cards" id="projects"></div>
+  <div class="layout">
+    <main>
+      <div class="section-title">Deliverables</div>
+      <div id="items"></div>
+      <div class="key">
+        <span><i style="background:var(--b600)"></i>Stages done</span>
+        <span><i style="background:var(--b300)"></i>Current stage</span>
+        <span><i style="background:var(--green)"></i>Complete</span>
+      </div>
+    </main>
+    <aside>
+      <div class="section-title">Today's sync</div>
+      <section class="panel" id="todayPanel"></section>
+      <section class="panel" id="livePanel"></section>
+    </aside>
+  </div>
+</div>
+
+<script>
+/* ============================ SETTINGS ============================
+   sheetLink: your Google Sheet's link (copy it from the address bar).
+   The Sheet must be shared as "Anyone with the link: Viewer".
+   Leave it empty to see demo data.                                      */
+const CONFIG = {
+  title: "MD x MBCS",
+  sheetLink: "https://docs.google.com/spreadsheets/d/1Afd4FIh-EB4E7-QNFK-qDnto0WfCnyTeeSjx9RX2jB8/edit",
+  tabNames: { projects: "Projects", items: "Items", today: "Today", workflows: "Workflows" },
+  dateOrder: "DMY",        // how the Sheet shows dates like 09/10/2026: "DMY" (Singapore) or "MDY" (US)
+  defaultRounds: 6,        // used when an item tracks rounds but "Rounds included" is blank
+  liveWindowDays: 14,      // "Going live" panel looks this many days ahead
+  refreshMinutes: 2
+};
+/* ================================================================== */
+
+/* Used when the Sheet has no Workflows tab, or a type isn't listed there */
+const DEFAULT_WORKFLOWS = {
+  "Influencer":     ["Brief","Shortlist","Talent approved","Contracted","Draft","Client review","Compliance","Live","Reported"],
+  "Publisher":      ["Brief","Proposal","Booked","Draft","Client review","Compliance","Live","Reported"],
+  "On-ground":      ["Concept","Approved","Venue and permits","Vendors locked","Run sheet","Event day","Wrap report"],
+  "Creative asset": ["Brief","Draft","Revisions","Compliance","Approved"]
+};
+
+const FIELDS = {
+  projects:  { id:["projectid","id","code"], name:["projectname","name"], deadline:["deadline"], linked:["linkedto","linked"], active:["active"] },
+  items:     { project:["projectid","project"], item:["item","deliverable"], type:["type","worktype","workstream"], stage:["stage","currentstage"], with:["with","ballwith","status"],
+               owner:["owner"], due:["duedate","due"], live:["livedate","live","eventdate"], weight:["weight"],
+               sent:["versionssent","versions"], included:["roundsincluded","included"], extra:["extraroundspaid","extrapaid"], note:["note","notes"] },
+  today:     { date:["date"], project:["projectid","project"], item:["item"], task:["task"], owner:["owner","who"], done:["done"] },
+  workflows: { type:["type","worktype"], stages:["stages","stagesinorder","stagesinordercommaseparated"] }
+};
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const norm = s => String(s||"").toLowerCase().replace(/[^a-z0-9]/g,"");
+const yes = s => /^(y|yes|true|1|done|x|✓)$/i.test(String(s||"").trim());
+const int = (s, d) => { const n = parseInt(String(s ?? "").trim(), 10); return isNaN(n) ? d : n; };
+const num = (s, d) => { const n = parseFloat(String(s ?? "").trim()); return isNaN(n) || n<0 ? d : n; };
+const pct = x => Math.round(x*100);
+
+function toObjects(headers, rows, map){
+  const heads = headers.map(norm), idx = {};
+  for(const [key, aliases] of Object.entries(map)){
+    let i = -1;
+    for(const a of aliases){ i = heads.indexOf(a); if(i>=0) break; }
+    if(i<0) for(const a of aliases){ i = heads.findIndex(h => h.startsWith(a)); if(i>=0) break; }
+    idx[key] = i;
+  }
+  return rows.filter(r => r.some(c => String(c ?? "").trim()!==""))
+    .map(r => { const o={}; for(const k in idx) o[k] = idx[k]>=0 ? String(r[idx[k]] ?? "").trim() : ""; return o; });
+}
+
+function parseDate(s){
+  if(!s) return null; s=String(s).trim();
+  let m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})(?:[ T](\d{1,2}):(\d{2}))?/);
+  if(m) return new Date(+m[1], m[2]-1, +m[3]);
+  m = s.match(/^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{4})/);
+  if(m){ const a=+m[1], b=+m[2], y=+m[3]; return CONFIG.dateOrder==="MDY" ? new Date(y,a-1,b) : new Date(y,b-1,a); }
+  const t = Date.parse(s); return isNaN(t) ? null : new Date(t);
+}
+const iso = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+const midnight = d => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+const daysFrom = d => Math.round((midnight(d) - midnight(new Date())) / 86400000);
+const fmtDate = d => d ? d.toLocaleDateString("en-GB",{day:"numeric",month:"short"}) : "";
+
+function withKey(s){
+  s = norm(s);
+  if(s.includes("compliance") || s.includes("legal")) return "compliance";
+  if(s.includes("partner") || s.includes("vendor") || s.includes("influencer") || s.includes("publisher") || s.includes("talent")) return "partner";
+  if(s.includes("client")) return "client";
+  if(s.includes("creative")) return "creative";
+  if(s.includes("content")) return "content";
+  if(s.includes("hold")) return "hold";
+  return "none";
+}
+const WITH_LABEL = {creative:"Creative", content:"Content", client:"Client", compliance:"Compliance", partner:"Partner", hold:"On hold", none:"–", done:"Done"};
+
+/* ---------- demo data (dates relative to today) ---------- */
+function demoTabs(){
+  const d = n => { const x=new Date(); x.setDate(x.getDate()+n); return iso(x); };
+  const T = (headers, rows) => ({headers, rows});
+  return {
+    projects: T(["Project ID","Project name","Deadline","Linked to","Active"],[
+      ["K01","Q4 always-on",d(30),"","Yes"],
+      ["K02","Year-end roadshow",d(21),"K01","Yes"],
+      ["K03","Creator series",d(12),"","Yes"]]),
+    items: T(["Project ID","Item","Type","Stage","With","Owner","Due date","Live date","Weight","Versions sent","Rounds included","Extra rounds paid","Note"],[
+      ["K01","Hero key visual","Creative asset","Revisions","Creative","Mei",d(3),"","2","4","6","0",""],
+      ["K01","Lifestyle portal feature","Publisher","Compliance","Compliance","Jun",d(5),d(9),"1","","","","Disclaimer wording pending"],
+      ["K01","Finance site advertorial","Publisher","Booked","Partner","Jun",d(8),d(16),"1","","","",""],
+      ["K02","Mall roadshow, weekend 1","On-ground","Vendors locked","Content","Arif",d(10),d(21),"3","","","","Booth fabricator confirmed"],
+      ["K02","Roadshow booth graphics","Creative asset","Draft","Creative","Mei",d(6),"","1","1","6","0",""],
+      ["K03","Creator A, reel","Influencer","Client review","Client","Priya",d(2),d(6),"1","3","2","1","Client bought 1 extra round"],
+      ["K03","Creator B, carousel","Influencer","Contracted","Partner","Priya",d(4),d(11),"1","","","",""],
+      ["K03","Creator C, story set","Influencer","Reported","","Priya",d(-3),d(-6),"1","","","",""]]),
+    today: T(["Date","Project ID","Item","Task","Owner","Done"],[
+      [d(0),"K01","Hero key visual","R3: swap product shot, tighten headline","Mei","No"],
+      [d(0),"K02","Roadshow booth graphics","First draft of backdrop","Mei","No"],
+      [d(0),"K03","Creator A, reel","Send R2 to client","Priya","Yes"],
+      [d(-1),"K01","Lifestyle portal feature","Chase compliance on disclaimer","Jun","No"]]),
+    workflows: T(["Type","Stages"], Object.entries(DEFAULT_WORKFLOWS).map(([k,v])=>[k, v.join(", ")]))
+  };
+}
+
+/* ---------- model ---------- */
+let TABS = null, DATA = null, SEL = "all", ERRORS = [], WARNS = [], IS_DEMO = false, LAST = null;
+
+function buildModel(tabs){
+  const raw = {};
+  for(const k of Object.keys(FIELDS)) raw[k] = tabs[k] && tabs[k].headers.length ? toObjects(tabs[k].headers, tabs[k].rows, FIELDS[k]) : [];
+  const warns = [];
+
+  const flows = new Map();
+  for(const [k,v] of Object.entries(DEFAULT_WORKFLOWS)) flows.set(norm(k), {name:k, stages:v});
+  raw.workflows.forEach(w => {
+    const stages = String(w.stages||"").split(/\s*(?:,|>|→|\n)\s*/).map(s=>s.trim()).filter(Boolean);
+    if(w.type && stages.length >= 2) flows.set(norm(w.type), {name:w.type, stages});
+  });
+
+  const projects = new Map(), inactive = new Set();
+  raw.projects.forEach(p => {
+    if(!p.id && !p.name) return;
+    const id = p.id || p.name;
+    if(p.active && !yes(p.active)){ inactive.add(norm(id)); return; }
+    projects.set(id, {id, name:p.name||id, deadline:parseDate(p.deadline),
+      linked:(p.linked||"").split(/[,;]/).map(s=>s.trim()).filter(Boolean), items:[]});
+  });
+  const findProject = key => {
+    if(!key) return null;
+    if(projects.has(key)) return projects.get(key);
+    const k = norm(key);
+    for(const p of projects.values()) if(norm(p.id)===k || norm(p.name)===k) return p;
+    return null;
+  };
+
+  const unknownTypes = new Set(), unknownStages = [];
+  raw.items.forEach(r => {
+    if(!r.item) return;
+    let p = findProject(r.project);
+    if(!p){ if(inactive.has(norm(r.project))) return;
+      const id = r.project || "Unassigned"; p = {id, name:id, deadline:null, linked:[], items:[]}; projects.set(id,p); }
+    let flow = flows.get(norm(r.type));
+    if(!flow){ if(r.type) unknownTypes.add(r.type); flow = {name:r.type||"Other", stages:["To do","In progress","Done"]}; }
+    const n = flow.stages.length;
+    let idx = flow.stages.findIndex(s => norm(s)===norm(r.stage));
+    const stageKnown = idx>=0 || !r.stage;
+    if(!stageKnown) unknownStages.push(`${r.item} ("${r.stage}")`);
+    if(idx<0) idx = 0;
+    const done = idx === n-1;
+    const progress = n>1 ? idx/(n-1) : 0;
+    const tracksRounds = String(r.sent).trim()!=="";
+    let rounds = null;
+    if(tracksRounds){
+      const included = int(r.included, CONFIG.defaultRounds), extra = Math.max(0,int(r.extra,0)), budget = included+extra;
+      const sent = Math.max(0,int(r.sent,0)), revs = Math.max(0, sent-1);
+      rounds = {included, extra, budget, sent, revs, over: Math.max(0, revs-budget)};
+    }
+    p.items.push({...r, flow, idx, n, done, progress, stageKnown, rounds,
+      wk: done ? "done" : withKey(r.with), weight: num(r.weight, 1) || 1,
+      dueD: parseDate(r.due), liveD: parseDate(r.live), project:p});
+  });
+  if(unknownTypes.size) warns.push(`Unknown type: ${[...unknownTypes].map(esc).join(", ")}. Add it to the Workflows tab.`);
+  if(unknownStages.length) warns.push(`Stage not in that type's list, so shown as the first stage: ${unknownStages.slice(0,3).map(esc).join("; ")}${unknownStages.length>3?` and ${unknownStages.length-3} more`:""}.`);
+
+  for(const p of projects.values()){
+    p.progress = wavg(p.items); p.done = p.items.filter(i=>i.done).length;
+    p.over = p.items.reduce((a,i)=>a+(i.rounds?i.rounds.over:0),0);
+  }
+  const today = raw.today.map(t => ({...t, d:parseDate(t.date), p:findProject(t.project), isDone:yes(t.done)}))
+    .filter(t => t.d && t.task && (daysFrom(t.d)===0 || (daysFrom(t.d)<0 && !t.isDone)));
+  return {projects:[...projects.values()], today, flows, warns};
+}
+function wavg(items){ const w = items.reduce((a,i)=>a+i.weight,0); return w ? items.reduce((a,i)=>a+i.progress*i.weight,0)/w : 0; }
+
+/* ---------- render ---------- */
+function daysLabel(d){
+  if(!d) return {t:"No deadline", warn:false};
+  const n = daysFrom(d);
+  if(n<0) return {t:`${-n}d overdue`, warn:true};
+  if(n===0) return {t:"Due today", warn:true};
+  return {t:`${n} day${n===1?"":"s"} left`, warn:n<=3};
+}
+
+function stageCell(i){
+  const segs = [];
+  for(let k=0;k<i.n;k++) segs.push(`<span class="${k<i.idx ? "d" : (k===i.idx && !i.done ? "n" : "")}"></span>`);
+  let label = i.done ? `<b>${esc(i.flow.stages[i.n-1])}</b> · complete`
+    : `<b>${esc(i.flow.stages[i.idx])}</b> · stage ${i.idx+1} of ${i.n}`;
+  if(!i.stageKnown) label += ` · <span class="w">check stage name</span>`;
+  const r = i.rounds;
+  if(r && !i.done){
+    label += r.sent<=1 ? ` · ${r.sent ? "first draft sent" : "no drafts yet"}` : ` · R${r.revs} of ${r.budget}`;
+    if(r.extra) label += ` (${r.extra} paid extra)`;
+    if(r.over) label += ` · <span class="r">${r.over} over budget</span>`;
+  }
+  return `<div class="segs ${i.done?"ok":""}">${segs.join("")}</div><div class="rl">${label}</div>`;
+}
+
+function dateCell(i){
+  const out = [];
+  const f = (d, lbl) => { const n = daysFrom(d); const late = n<0 && !i.done;
+    return `<div><span class="lbl">${lbl}</span> <span class="${late?"late":""}">${late ? `${-n}d late` : n===0 && !i.done ? "today" : fmtDate(d)}</span></div>`; };
+  if(i.liveD) out.push(f(i.liveD,"Live"));
+  if(i.dueD) out.push(f(i.dueD,"Due"));
+  return out.join("") || "–";
+}
+
+function itemRow(i){
+  const sub = [i.owner, i.note].filter(Boolean).map(esc).join(" · ");
+  return `<div class="item">
+    <div><div class="nm">${esc(i.item)}</div><div class="sub"><span class="type">${esc(i.flow.name)}</span>${sub}</div></div>
+    <div><span class="chip ${i.wk}">${WITH_LABEL[i.wk]}</span></div>
+    <div>${stageCell(i)}</div>
+    <div class="dates">${dateCell(i)}</div>
+  </div>`;
+}
+
+function render(){
+  $("title").textContent = CONFIG.title;
+  document.title = CONFIG.title;
+  $("today").textContent = new Date().toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long"});
+  $("stamp").textContent = LAST ? "Updated " + LAST.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"}) : "";
+
+  let b = "";
+  if(IS_DEMO) b += `<div class="banner">Demo data. Add your Google Sheet link in the settings at the top of index.html to go live.</div>`;
+  ERRORS.forEach(e => b += `<div class="banner err">${esc(e)}</div>`);
+  (DATA ? DATA.warns : []).forEach(w => b += `<div class="banner warn">${w}</div>`);
+  $("banners").innerHTML = b;
+  if(!DATA) return;
+
+  const {projects} = DATA;
+  if(SEL!=="all" && !projects.some(p=>p.id===SEL)) SEL="all";
+  const shown = SEL==="all" ? projects : projects.filter(p=>p.id===SEL);
+  const ids = new Set(shown.map(p=>p.id));
+  const items = shown.flatMap(p=>p.items);
+
+  $("chips").innerHTML =
+    `<button class="tab ${SEL==="all"?"on":""}" data-sel="all" type="button">All projects</button>` +
+    projects.map(p=>`<button class="tab ${SEL===p.id?"on":""}" data-sel="${esc(p.id)}" type="button">${esc(p.name)}</button>`).join("");
+
+  const cnt = k => items.filter(i=>i.wk===k).length;
+  const overall = pct(wavg(items)), doneN = items.filter(i=>i.done).length;
+  const cell = (k, v, s) => `<div class="sum"><div class="k">${k}</div><div class="v">${v}</div><div class="s">${s}</div></div>`;
+  $("strip").innerHTML = `
+    <div class="sum"><div class="k">${SEL==="all"?"Overall progress":"Project progress"}</div><div class="v">${overall}%</div>
+      <div class="mini"><div style="width:${overall}%"></div></div><div class="s">${doneN} of ${items.length} complete</div></div>` +
+    cell("With creative", cnt("creative"), "waiting on creative") +
+    cell("With content", cnt("content"), "waiting on content") +
+    cell("With client", cnt("client"), "waiting on client") +
+    cell("With compliance", cnt("compliance"), "legal and compliance") +
+    cell("With partner", cnt("partner"), "creators, publishers, vendors");
+
+  const types = new Map();
+  items.forEach(i => { const k = i.flow.name; if(!types.has(k)) types.set(k, []); types.get(k).push(i); });
+  $("streams").innerHTML = [...types.entries()].map(([name, its]) => {
+    const pc = pct(wavg(its));
+    const next = its.filter(i=>!i.done && i.liveD && daysFrom(i.liveD)>=0).sort((a,b)=>a.liveD-b.liveD)[0];
+    return `<div class="stream"><div class="top2"><span class="nm">${esc(name)}</span><span class="pc">${pc}%</span></div>
+      <div class="bar"><div style="width:${pc}%"></div></div>
+      <div class="s">${its.filter(i=>i.done).length} of ${its.length} complete${next ? ` · next live ${fmtDate(next.liveD)}` : ""}</div></div>`;
+  }).join("") || `<div class="empty">No deliverables yet.</div>`;
+
+  $("projects").innerHTML = shown.map(p => {
+    const dl = daysLabel(p.deadline), pc = pct(p.progress);
+    const meta = [p.deadline ? "due "+fmtDate(p.deadline) : ""].filter(Boolean);
+    const comp = p.items.filter(i=>i.wk==="compliance").length;
+    if(comp) meta.push(`${comp} with compliance`);
+    if(p.over) meta.push(`<span class="r">${p.over} round${p.over===1?"":"s"} over budget</span>`);
+    const linked = p.linked.map(l=>projects.find(x=>x.id===l)).filter(Boolean);
+    if(linked.length) meta.push("linked to " + linked.map(x=>esc(x.name)).join(", "));
+    return `<button class="card ${SEL===p.id?"sel":""}" data-sel="${esc(p.id)}" type="button">
+      <div class="ch"><span class="name">${esc(p.name)}</span><span class="days ${dl.warn?"warn":""}">${dl.t}</span></div>
+      <div class="cb">
+        <div class="pct"><b>${pc}%</b><span>${p.done} of ${p.items.length} complete</span></div>
+        <div class="bar"><div style="width:${pc}%"></div></div>
+        <div class="meta">${meta.join(" · ")}</div>
+      </div>
+    </button>`;
+  }).join("");
+
+  const order = {creative:0, content:1, compliance:2, client:3, partner:4, none:5, hold:6, done:7};
+  const key = i => i.liveD || i.dueD || Infinity;
+  const sortItems = arr => [...arr].sort((a,b)=> order[a.wk]-order[b.wk] || key(a)-key(b));
+  $("items").innerHTML = shown.map(p => `<section class="panel">
+      <div class="ph"><h2>${esc(p.name)}</h2><span>${p.items.length} item${p.items.length===1?"":"s"}</span></div>
+      <div class="thead"><div>Deliverable</div><div>With</div><div>Stage</div><div>Dates</div></div>
+      <div class="pb">${p.items.length ? sortItems(p.items).map(itemRow).join("") : `<div class="empty">No items yet. Add rows in the Items tab of the Sheet.</div>`}</div>
+    </section>`).join("") || `<section class="panel"><div class="pb"><div class="empty">No active projects. Add one in the Projects tab of the Sheet.</div></div></section>`;
+
+  const todays = DATA.today.filter(t => SEL==="all" || (t.p && ids.has(t.p.id))).sort((a,b)=>a.isDone-b.isDone || (a.d-b.d));
+  $("todayPanel").innerHTML = `<div class="ph"><h2>Today</h2><span>${todays.filter(t=>!t.isDone).length} open</span></div><div class="pb">` +
+    (todays.length ? todays.map(t => {
+      const carried = daysFrom(t.d)<0;
+      return `<div class="li ${t.isDone?"done":""}"><span class="box"></span><span class="t">${esc(t.task)}</span>
+        <div class="m indent">${esc(t.item||(t.p?t.p.name:t.project))}${t.owner?" · "+esc(t.owner):""}${carried?` · <span class="r">from ${fmtDate(t.d)}</span>`:""}</div></div>`;
+    }).join("") : `<div class="empty">Nothing scheduled for today.</div>`) + `</div>`;
+
+  const W = CONFIG.liveWindowDays;
+  const lives = items.filter(i => !i.done && i.liveD && daysFrom(i.liveD) <= W).sort((a,b)=>a.liveD-b.liveD);
+  $("livePanel").innerHTML = `<div class="ph"><h2>Going live</h2><span>next ${W} days</span></div><div class="pb">` +
+    (lives.length ? lives.map(i => {
+      const n = daysFrom(i.liveD);
+      const when = n<0 ? `${-n}d late` : n===0 ? "Today" : n===1 ? "Tomorrow" : fmtDate(i.liveD);
+      return `<div class="li"><span class="when ${n<=3?"soon":""}">${when}</span>${esc(i.item)}
+        <div class="m">${esc(i.flow.name)} · ${esc(i.flow.stages[i.idx])} · with ${WITH_LABEL[i.wk].toLowerCase()}</div></div>`;
+    }).join("") : `<div class="empty">Nothing going live in the next ${W} days.</div>`) + `</div>`;
+}
+
+/* ---------- loading ---------- */
+function parseCSV(text){
+  const rows=[]; let row=[], f="", q=false;
+  for(let i=0;i<text.length;i++){
+    const c=text[i];
+    if(q){ if(c==='"'){ if(text[i+1]==='"'){f+='"';i++;} else q=false; } else f+=c; }
+    else if(c==='"') q=true;
+    else if(c===','){ row.push(f); f=""; }
+    else if(c==='\n'){ row.push(f); rows.push(row); row=[]; f=""; }
+    else if(c!=='\r') f+=c;
+  }
+  if(f!==""||row.length){ row.push(f); rows.push(row); }
+  return rows;
+}
+function sheetId(link){
+  const m = String(link||"").match(/\/spreadsheets\/d\/([a-zA-Z0-9_-]{20,})/);
+  return m ? m[1] : null;
+}
+async function fetchTab(id, name){
+  const url = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:csv&headers=1&sheet=${encodeURIComponent(name)}&t=${Date.now()}`;
+  const r = await fetch(url, {cache:"no-store"});
+  if(!r.ok) throw new Error("HTTP " + r.status);
+  const t = await r.text();
+  if(/^\s*<(!doctype|html)/i.test(t)) throw new Error("not shared");
+  const rows = parseCSV(t);
+  return {headers: (rows[0]||[]).map(h=>h.trim()), rows: rows.slice(1)};
+}
+
+async function load(){
+  const id = sheetId(CONFIG.sheetLink);
+  IS_DEMO = !CONFIG.sheetLink;
+  const edit = $("editBtn");
+  if(IS_DEMO){ edit.style.display="none"; TABS = demoTabs(); DATA = buildModel(TABS); LAST = new Date(); render(); return; }
+  edit.href = id ? `https://docs.google.com/spreadsheets/d/${id}/edit` : CONFIG.sheetLink;
+  if(!id){ ERRORS = ["The sheetLink in the settings doesn't look like a Google Sheets link."]; render(); return; }
+  const keys = Object.keys(CONFIG.tabNames);
+  const res = await Promise.allSettled(keys.map(k => fetchTab(id, CONFIG.tabNames[k])));
+  const next = {}, failed = [];
+  res.forEach((r,n) => {
+    const k = keys[n];
+    if(r.status==="fulfilled") next[k] = r.value;
+    else { if(k!=="workflows") failed.push(CONFIG.tabNames[k]); next[k] = TABS && TABS[k] ? TABS[k] : {headers:[], rows:[]}; }
+  });
+  /* a tab Google can't find comes back as the first tab: ignore a "Workflows" result that isn't one */
+  if(next.workflows && !next.workflows.headers.some(h => norm(h)==="stages" || norm(h).startsWith("stages"))) next.workflows = {headers:[], rows:[]};
+  ERRORS = [];
+  if(failed.length===3) ERRORS.push(`Couldn't read the Sheet. Check it's shared as "Anyone with the link: Viewer".` + (TABS ? " Showing the last data that loaded." : ""));
+  else if(failed.length) ERRORS.push(`Couldn't read the ${failed.join(", ")} tab${failed.length>1?"s":""}. Check the tab name matches exactly.`);
+  TABS = next; DATA = buildModel(TABS);
+  if(failed.length < 3) LAST = new Date();
+  render();
+}
+
+/* ---------- events ---------- */
+document.addEventListener("click", e => {
+  const t = e.target.closest("[data-sel]");
+  if(t){ const s = t.getAttribute("data-sel"); SEL = (SEL===s && s!=="all") ? "all" : s; render(); }
+});
+document.addEventListener("keydown", e => {
+  if(!DATA || e.target.closest("input,textarea,select")) return;
+  const order = ["all", ...DATA.projects.map(p=>p.id)];
+  const i = order.indexOf(SEL);
+  if(e.key==="ArrowRight"){ SEL = order[(i+1)%order.length]; render(); }
+  if(e.key==="ArrowLeft"){ SEL = order[(i-1+order.length)%order.length]; render(); }
+});
+document.addEventListener("visibilitychange", () => { if(!document.hidden) load(); });
+$("refresh").addEventListener("click", load);
+load();
+setInterval(load, Math.max(1, CONFIG.refreshMinutes) * 60000);
+</script>
+</body>
+</html>
